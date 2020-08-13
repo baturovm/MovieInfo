@@ -38,7 +38,8 @@ class MovieListAdapter(val ctx: MainActivity) : RecyclerView.Adapter<MovieListAd
              ViewCompat.setTransitionName(itemView.poster_movie_item, "trans$adapterPosition")
             Glide.with(itemView)
                 .load(item.imageURL)
-                .placeholder(ContextCompat.getDrawable(ctx, R.drawable.ic_baseline_movie_24))
+                .centerCrop()
+                .placeholder(ContextCompat.getDrawable(ctx, R.drawable.ic_baseline_broken_image_24))
                 .into(itemView.poster_movie_item)
             itemView.setOnClickListener {
                 val bundle = Bundle().apply {

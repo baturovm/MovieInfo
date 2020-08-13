@@ -17,7 +17,7 @@ data class Movie (
     @SerializedName("image_url")
     val imageURL : String,
     @SerializedName("description")
-    val description : String,
+    val description : String?,
     @SerializedName("genres")
     val genres : List<String>
 ) : Serializable

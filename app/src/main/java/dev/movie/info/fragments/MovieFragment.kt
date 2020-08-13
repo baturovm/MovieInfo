@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
@@ -42,11 +43,13 @@ class MovieFragment : Fragment() {
         ViewCompat.setTransitionName(poster_movie, "end_container")
         Glide.with(requireContext())
             .load(movie.imageURL)
+            .centerCrop()
+            .placeholder(ContextCompat.getDrawable(requireContext(), R.drawable.ic_baseline_broken_image_24))
             .into(poster_movie)
         toolbar_movie.title = movie.titleRU
         title_movie.text = movie.titleEN
         rating_movie.text = movie.rating.toString()
         year_movie.text = movie.year.toString()
-        description_movie.text = if(movie.description.isEmpty()) "Нет описания" else movie.description
+        description_movie.text = if(movie.description.isNullOrEmpty()) "Нет описания" else movie.description
     }
 }
