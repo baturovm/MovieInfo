@@ -16,7 +16,12 @@ import kotlinx.android.synthetic.main.item_movie.view.*
 
 class MovieListAdapter(val ctx: MainActivity) : RecyclerView.Adapter<MovieListAdapter.ViewHolder>() {
 
-    var items: List<Movie> = listOf()
+    private var items: List<Movie> = listOf()
+
+    fun setData(list: List<Movie>) {
+        items = list
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(

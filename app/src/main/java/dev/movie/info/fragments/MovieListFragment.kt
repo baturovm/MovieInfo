@@ -40,16 +40,23 @@ class MovieListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         init()
         model.moviesObject.observe(viewLifecycleOwner, Observer {
-            when {
-                it == null -> showPlaceholder("Не удалось получить список!")
-                it.movies.isEmpty() -> showPlaceholder("Пусто")
-                else -> initView(it)
-            }
+            initView(it)
         })
         model.filteredList.observe(viewLifecycleOwner, Observer {
-            showList(true)
-            updateList(it)
+            if (it==null) {
+                updateList(model.getMovies())
+            } else {
+                updateList(it)
+            }
         })
+        chip_group_filter.setOnCheckedChangeListener { _, checkedId ->
+            val chip: Chip? = ctx.findViewById(checkedId)
+            if(chip==null) { //Ничего не выбрано
+                model.filteredList.value = null
+            } else { //Выбран жанр
+                model.filterData(chip.text.toString())
+            }
+        }
     }
 
     private fun init() {
@@ -58,24 +65,22 @@ class MovieListFragment : Fragment() {
         rv_movie_list.adapter = adapter
     }
 
-    //Запоняем данные и ставим слушатель chips
-    private fun initView(moviesObject: MoviesObject) {
-        updateList(moviesObject.movies)
-        createChips(moviesObject.genres)
-        chip_group_filter.setOnCheckedChangeListener { _, checkedId ->
-            val chip: Chip? = ctx.findViewById(checkedId)
-            if(chip==null) {
-                updateList(model.getMovies())
-            } else {
-                model.filterData(chip.text as String)
+    //Запоняем данные
+    private fun initView(moviesObject: MoviesObject?) {
+        when {
+            moviesObject == null -> showPlaceholder("Не удалось получить список!")
+            moviesObject.movies.isEmpty() -> showPlaceholder("Пусто")
+            else -> {
+                updateList(moviesObject.movies)
+                createChips(moviesObject.genres)
             }
         }
     }
 
     //Обновление списка и скрытие Placeholder
     private fun updateList(list: List<Movie>) {
-        adapter.items = list
-        adapter.notifyDataSetChanged()
+        showList(true)
+        adapter.setData(list)
     }
 
     //Создаем chips на основе списка жанров
@@ -90,16 +95,16 @@ class MovieListFragment : Fragment() {
         }
     }
 
-    //Ошибка или список пуст, показываем Placeholder
-    private fun showPlaceholder(error: String) {
-        showList(false)
-        error_text_movie_list.text = error
-    }
-
     //Показываем список, скрывая Placeholder
     private fun showList(value: Boolean) {
         rv_movie_list.setVisibility(value)
         placeholder_movie_list.setVisibility(!value)
+    }
+
+    //Ошибка или список пуст, показываем Placeholder
+    private fun showPlaceholder(error: String) {
+        showList(false)
+        error_text_movie_list.text = error
     }
 
     private fun View.setVisibility(value: Boolean) {

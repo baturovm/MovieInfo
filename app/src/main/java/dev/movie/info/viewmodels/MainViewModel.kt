@@ -16,8 +16,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class MainViewModel : ViewModel() {
 
-    val moviesObject = MutableLiveData<MoviesObject>()
-    val filteredList = MutableLiveData<List<Movie>>()
+    val moviesObject = MutableLiveData<MoviesObject?>()
+    val filteredList = MutableLiveData<List<Movie>?>()
 
     private var retrofit: Retrofit = Retrofit.Builder()
         .baseUrl("https://s3-eu-west-1.amazonaws.com/")
@@ -64,8 +64,8 @@ class MainViewModel : ViewModel() {
     //Достаем список жанров
     private fun getGenres(list: List<Movie>): List<String> {
         val genres = mutableListOf<String>()
-        for(item in list) {
-           genres.addAll(item.genres)
+        list.forEach { movie ->
+           genres.addAll(movie.genres)
         }
         return genres.distinct()
     }
@@ -75,9 +75,9 @@ class MainViewModel : ViewModel() {
     fun filterData(genre: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val list = mutableListOf<Movie>()
-            for(item in getMovies()) {
-                if(item.genres.contains(genre)) {
-                    list.add(item)
+            getMovies().forEach { movie ->
+                if(movie.genres.contains(genre)) {
+                    list.add(movie)
                 }
             }
             filteredList.postValue(list)
