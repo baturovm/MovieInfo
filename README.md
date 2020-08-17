@@ -3,7 +3,7 @@
 Usage:
 - Kotlin
 - Android Architecture Components (LiveData, Lifecycle, ViewModel, Navigation)
-- retrofit2
+- Retrofit2
 - Kotlin Coroutines
 - Material Components
 - Glide
